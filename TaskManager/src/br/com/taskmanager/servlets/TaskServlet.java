@@ -15,23 +15,23 @@ import com.google.gson.Gson;
 
 import br.com.taskmanager.model.Task;
 
-@WebServlet("/TaskServlet")
+@WebServlet("/TaskServlet/*")
 public class TaskServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	private static final List<Task> tasks = new ArrayList<Task>();
 
-    
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	response.setContentType("aplication/json; charset-UTF=8");
-    	String pathInfo = request.getPathInfo();
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.setContentType("aplication/json; charset-UTF=8");
+    	String pathInfo = req.getPathInfo();
       	
     	if(pathInfo == null || pathInfo.equals("/")){
-    		doGetAll(request, response);
+    		doGetAll(req, resp);
       	} else {
-    		doGetById(request, response, pathInfo);
+    		doGetById(req, resp, pathInfo);
     	} 
-    }	
+	}
     
     protected void doGetAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	Gson gson = new Gson();
@@ -95,6 +95,7 @@ public class TaskServlet extends HttpServlet {
     	task.setTitle(newTask.getTitle()); 
     	task.setResume(newTask.getResume()); 
     	task.setPriority(newTask.isPriority());
+    	task.setDone(newTask.isDone());
     	String json = gson.toJson(task); 
     	response.setStatus(HttpServletResponse.SC_OK); 
     	response.getWriter().write(json);
